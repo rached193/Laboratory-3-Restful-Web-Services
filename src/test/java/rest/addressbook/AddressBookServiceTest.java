@@ -21,6 +21,8 @@ import rest.addressbook.AddressBook;
 import rest.addressbook.ApplicationConfig;
 import rest.addressbook.Person;
 
+import java.util.List;
+
 /**
  * A simple test suite
  *
@@ -35,6 +37,8 @@ public class AddressBookServiceTest {
 		AddressBook ab = new AddressBook();
 		launchServer(ab);
 
+		List<Person> antes = ab.getPersonList();
+
 		// Request the address book
 		Client client = ClientBuilder.newClient();
 		Response response = client.target("http://localhost:8282/contacts")
@@ -43,10 +47,13 @@ public class AddressBookServiceTest {
 		assertEquals(0, response.readEntity(AddressBook.class).getPersonList()
 				.size());
 
+		List<Person> despues = ab.getPersonList();
+
 		//////////////////////////////////////////////////////////////////////
 		// Verify that GET /contacts is well implemented by the service, i.e
 		// test that it is safe and idempotent
-		//////////////////////////////////////////////////////////////////////	
+		//////////////////////////////////////////////////////////////////////
+		assertEquals(antes,despues);
 	}
 
 	@Test
@@ -54,6 +61,7 @@ public class AddressBookServiceTest {
 		// Prepare server
 		AddressBook ab = new AddressBook();
 		launchServer(ab);
+
 
 		// Prepare data
 		Person juan = new Person();
@@ -74,6 +82,7 @@ public class AddressBookServiceTest {
 		assertEquals(1, juanUpdated.getId());
 		assertEquals(juanURI, juanUpdated.getHref());
 
+
 		// Check that the new user exists
 		response = client.target("http://localhost:8282/contacts/person/1")
 				.request(MediaType.APPLICATION_JSON).get();
@@ -84,11 +93,24 @@ public class AddressBookServiceTest {
 		assertEquals(1, juanUpdated.getId());
 		assertEquals(juanURI, juanUpdated.getHref());
 
+
+
 		//////////////////////////////////////////////////////////////////////
 		// Verify that POST /contacts is well implemented by the service, i.e
 		// test that it is not safe and not idempotent
-		//////////////////////////////////////////////////////////////////////	
-				
+		//////////////////////////////////////////////////////////////////////
+		Client clientTest = ClientBuilder.newClient();
+		Response responseTest = clientTest.target("http://localhost:8282/contacts")
+				.request(MediaType.APPLICATION_JSON)
+				.post(Entity.entity(juan, MediaType.APPLICATION_JSON));
+
+		Person despues = responseTest.readEntity(Person.class);
+
+		assertEquals(juan.getName(),despues.getName());
+		assertNotEquals(juanURI, responseTest.getLocation());
+		assertNotEquals(1,despues.getId());
+		//he user is the same will have another id
+
 	}
 
 	@Test
@@ -142,8 +164,8 @@ public class AddressBookServiceTest {
 		//////////////////////////////////////////////////////////////////////
 		// Verify that GET /contacts/person/3 is well implemented by the service, i.e
 		// test that it is safe and idempotent
-		//////////////////////////////////////////////////////////////////////	
-	
+		//////////////////////////////////////////////////////////////////////
+
 	}
 
 	@Test
@@ -174,8 +196,8 @@ public class AddressBookServiceTest {
 		//////////////////////////////////////////////////////////////////////
 		// Verify that POST is well implemented by the service, i.e
 		// test that it is not safe and not idempotent
-		//////////////////////////////////////////////////////////////////////	
-	
+		//////////////////////////////////////////////////////////////////////
+
 	}
 
 	@Test
@@ -227,8 +249,8 @@ public class AddressBookServiceTest {
 		//////////////////////////////////////////////////////////////////////
 		// Verify that PUT /contacts/person/2 is well implemented by the service, i.e
 		// test that it is idempotent
-		//////////////////////////////////////////////////////////////////////	
-	
+		//////////////////////////////////////////////////////////////////////
+
 	}
 
 	@Test
@@ -260,7 +282,7 @@ public class AddressBookServiceTest {
 		//////////////////////////////////////////////////////////////////////
 		// Verify that DELETE /contacts/person/2 is well implemented by the service, i.e
 		// test that it is idempotent
-		//////////////////////////////////////////////////////////////////////	
+		//////////////////////////////////////////////////////////////////////
 
 	}
 
