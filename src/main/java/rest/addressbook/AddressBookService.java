@@ -23,7 +23,7 @@ import javax.ws.rs.core.UriInfo;
 public class AddressBookService {
 
 	/**
-	 * The (shared) address book object. 
+	 * The (shared) address book object.
 	 */
 	@Inject
 	AddressBook addressBook;

@@ -53,7 +53,7 @@ public class AddressBookServiceTest {
 		// Verify that GET /contacts is well implemented by the service, i.e
 		// test that it is safe and idempotent
 		//////////////////////////////////////////////////////////////////////
-		assertEquals(antes,despues);
+		assertEquals(antes.size(),despues.size());
 	}
 
 	@Test
@@ -207,7 +207,22 @@ public class AddressBookServiceTest {
 		// Verify that POST is well implemented by the service, i.e
 		// test that it is not safe and not idempotent
 		//////////////////////////////////////////////////////////////////////
+		List<Person> list1 = addressBookRetrieved.getPersonList();
 
+		response = client.target("http://localhost:8282/contacts")
+				.request(MediaType.APPLICATION_JSON)
+				.post(Entity.entity(juan, MediaType.APPLICATION_JSON));
+
+
+		Client clientTest = ClientBuilder.newClient();
+		Response responseTest = clientTest.target("http://localhost:8282/contacts")
+					.request()
+					.get();
+
+
+		List<Person> list2 = responseTest.readEntity(AddressBook.class).getPersonList();
+
+		assertNotEquals(list1.size(),list2.size());
 	}
 
 	@Test
@@ -261,6 +276,20 @@ public class AddressBookServiceTest {
 		// test that it is idempotent
 		//////////////////////////////////////////////////////////////////////
 
+		Client clientTest = ClientBuilder.newClient();
+		Response responseTest = clientTest.target("http://localhost:8282/contacts/person/2")
+				.request(MediaType.APPLICATION_JSON)
+				.put(Entity.entity(juan, MediaType.APPLICATION_JSON));
+
+		List<Person> list1 = responseTest.readEntity(AddressBook.class).getPersonList();
+		responseTest =  clientTest.target("http://localhost:8282/contacts/person/2")
+					.request(MediaType.APPLICATION_JSON)
+					.put(Entity.entity(juan, MediaType.APPLICATION_JSON));
+			List<Person> list2 = responseTest.readEntity(AddressBook.class).getPersonList();
+
+			assertEquals(list1.size(), list2.size());
+			//assertEquals(list1.get(0).getName(), list2.get(0).getName());
+
 	}
 
 	@Test
@@ -298,7 +327,7 @@ public class AddressBookServiceTest {
 					.request()
 					.delete();
 
-		assertEquals(404, responseTest.getStatus());				
+		assertEquals(404, responseTest.getStatus());
 
 	}
 
