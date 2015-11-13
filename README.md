@@ -40,3 +40,4 @@ Ramón José Arellano Bitrián | 594040
 Daniel Uroz | 545338 | [repo](https://github.com/uZetta27/Laboratory-3-Restful-Web-Services) | [![Build Status](https://travis-ci.org/uZetta27/Laboratory-3-Restful-Web-Services.svg?branch=master)](https://travis-ci.org/uZetta27/Laboratory-3-Restful-Web-Services)
 Jorge Berdún Udina | 591454
 Guillermo Pérez García | 610382 | [repo](https://github.com/guillepg/Laboratory-3-Restful-Web-Services) | [![Build Status](https://travis-ci.org/guillepg/Laboratory-3-Restful-Web-Services.svg?branch=master)](https://travis-ci.org/guillepg/Laboratory-3-Restful-Web-Services)
+Aron Collados Torres | 626558| [repo](https://github.com/rached193/Laboratory-3-Restful-Web-Services) | [![Build Status](https://travis-ci.org/rached193/Laboratory-3-Restful-Web-Services.svg?branch=master)](https://travis-ci.org/rached193/Laboratory-3-Restful-Web-Services)
