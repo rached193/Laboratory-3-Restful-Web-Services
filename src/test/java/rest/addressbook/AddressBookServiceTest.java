@@ -165,6 +165,16 @@ public class AddressBookServiceTest {
 		// Verify that GET /contacts/person/3 is well implemented by the service, i.e
 		// test that it is safe and idempotent
 		//////////////////////////////////////////////////////////////////////
+		Client clientTest = ClientBuilder.newClient();
+		Response responseTest = clientTest.target("http://localhost:8282/contacts/person/3")
+				.request(MediaType.APPLICATION_JSON)
+				.get();
+
+		Person despues = responseTest.readEntity(Person.class);
+
+		assertEquals(mariaUpdated.getId(), despues.getId());
+		assertEquals(mariaUpdated.getName(), despues.getName());
+		//user atributtes not change
 
 	}
 
@@ -283,6 +293,12 @@ public class AddressBookServiceTest {
 		// Verify that DELETE /contacts/person/2 is well implemented by the service, i.e
 		// test that it is idempotent
 		//////////////////////////////////////////////////////////////////////
+		Client clientTest = ClientBuilder.newClient();
+		Response responseTest = clientTest.target("http://localhost:8282/contacts/person/2")
+					.request()
+					.delete();
+
+		assertEquals(404, responseTest.getStatus());				
 
 	}
 
